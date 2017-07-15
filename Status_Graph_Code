@@ -1,0 +1,64 @@
+//HTML for status graphs
+
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<div class = "chart1" id="container" style="height: 300px"></div>
+
+
+
+
+//Javascript for status graph
+
+$(function() {
+    var chart = new Highcharts.Chart({
+
+        chart: {
+            renderTo: 'container',
+            type: 'column',
+            width: 450
+        },
+
+        title: {
+                text: 'NIST Controls'
+        },
+        xAxis: {
+                categories:['Total', 'Completed', 'In Progress', 'Not Started']
+        },
+        yAxis: {
+            title: {
+                text: 'Number of controls',
+                useHTML: true,
+                style: {
+                    "-webkit-transform": "rotate(90deg)",
+                    "-moz-transform": "rotate(90deg)", 
+                    "-o-transform": "rotate(90deg)"
+                }
+            }
+        },
+        plotOptions: {
+        series: {
+            cursor: 'pointer',
+            color: '#236add',
+            point: {
+                events: {
+                //The function below opens a popup window that currently displays
+                //the number in the clicked bar. It
+                //should be displaying a new window (like a sub-spreadsheet) of
+                //all controls that match the selected state
+                    click: function () {
+                        alert('Category: ' + this.category + ', value: ' + this.y);
+                         }
+                        }
+                    }
+                }
+            },
+        series: [{
+            showInLegend: false,
+            // This pre-defines the data to be represented by each bar.
+            // It should route to the database for dynamic chart generation.
+            //The first element of this list corresponds to the "total"
+            // controls  bar, the second = "completed", third = "in progress",
+            // and fourth  = "not started"
+            data: [145,86,37,22]}]
+
+    });
+});

@@ -1,0 +1,146 @@
+## HTML for radial progress bar
+
+<div class="radial-progress" data-progress="0">
+  <div class="circle">
+    <div class="mask full">
+      <div class="fill"></div>
+    </div>
+    <div class="mask half">
+      <div class="fill"></div>
+      <div class="fill fix"></div>
+    </div>
+    <div class="shadow"></div>
+  </div>
+  <div class="inset">
+    <div class="percentage"></div>
+    <div class="message">
+      Completed
+    </div>
+  </div>
+</div>
+
+
+
+## CSS for radial progress bar
+
+@import url(http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic);
+.radial-progress {
+  @circle-size: 540px;
+  @circle-background: #d6dadc;
+  @circle-color: #236add;
+  @inset-size: 300px;
+  @inset-color: #fbfbfb;
+  @transition-length: 1s;
+  @shadow: 6px 6px 10px rgba(0, 0, 0, 0.2);
+  @percentage-color: #236add;
+  @percentage-font-size: 60px;
+  @percentage-text-width: 57px;
+  margin: 50px;
+  width: @circle-size;
+  height: @circle-size;
+  background-color: @circle-background;
+  border-radius: 50%;
+  .circle {
+    .mask,
+    .fill,
+    .shadow {
+      width: @circle-size;
+      height: @circle-size;
+      position: absolute;
+      border-radius: 50%;
+    }
+    .shadow {
+      box-shadow: @shadow inset;
+    }
+    .mask,
+    .fill {
+      -webkit-backface-visibility: hidden;
+      transition: -webkit-transform @transition-length;
+      transition: -ms-transform @transition-length;
+      transition: transform @transition-length;
+      border-radius: 50%;
+    }
+    .mask {
+      clip: rect(0px, @circle-size, @circle-size, @circle-size/2);
+      .fill {
+        clip: rect(0px, @circle-size/2, @circle-size, 0px);
+        background-color: @circle-color;
+      }
+    }
+  }
+  .inset {
+    width: @inset-size;
+    height: @inset-size;
+    position: absolute;
+    margin-left: (@circle-size - @inset-size)/2;
+    margin-top: (@circle-size - @inset-size)/2;
+    background-color: @inset-color;
+    border-radius: 50%;
+    box-shadow: @shadow;
+    .percentage {
+      width: @percentage-text-width;
+      position: absolute;
+      top: (@inset-size - @percentage-font-size) / 2 - 20;
+      left: (@inset-size - @percentage-text-width) / 2 - 18;
+      line-height: 1;
+      text-align: center;
+      font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: @percentage-color;
+      font-weight: 800;
+      font-size: @percentage-font-size;
+    }
+    .message {
+      width: 50px;
+      position: absolute;
+      top: (@inset-size - @percentage-font-size) / 2 + 40;
+      left: (@inset-size - @percentage-text-width) / 2 - 94;
+      line-height: 1;
+      text-align: center;
+      font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: @percentage-color;
+      font-weight: 800;
+      font-size: 50px;
+    }
+  }
+  @i: 0;
+  @increment: 180deg / 100;
+  .loop (@i) when (@i <=100) {
+    &[data-progress="@{i}"] {
+      .circle {
+        .mask.full,
+        .fill {
+          -webkit-transform: rotate(@increment * @i);
+          -ms-transform: rotate(@increment * @i);
+          transform: rotate(@increment * @i);
+        }
+        .fill.fix {
+          -webkit-transform: rotate(@increment * @i * 2);
+          -ms-transform: rotate(@increment * @i * 2);
+          transform: rotate(@increment * @i * 2);
+        }
+      }
+      .inset .percentage:before {
+        content: "@{i}%"
+      }
+    }
+    .loop(@i + 1);
+  }
+  .loop(@i);
+}
+
+
+
+## Javascript for radial progress bar
+
+
+$('head style[type="text/css"]').attr('type', 'text/less');
+less.refreshStyles();
+// The function below randomizes the completed percentage, we could route this
+// to the completion percentage computed by the database
+window.randomize = function() {
+  $('.radial-progress').attr('data-progress', Math.floor(Math.random() * 100));
+}
+setTimeout(window.randomize, 200);
+$('.radial-progress').click(window.randomize);
+
+// Read more here: https://medium.com/@andsens/radial-progress-indicator-using-css-a917b80c43f9
